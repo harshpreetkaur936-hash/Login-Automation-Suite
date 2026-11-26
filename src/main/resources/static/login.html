@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login | Login Automation Suite</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Segoe UI, Arial, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #101b34, #1d4b83);
+}
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    background: white;
+    padding: 38px;
+    border-radius: 18px;
+    box-shadow: 0 20px 60px #0004;
+}
+
+.logo {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 800;
+    color: #14213d;
+    margin-bottom: 8px;
+}
+
+.logo span {
+    color: #2563eb;
+}
+
+.subtitle {
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    color: #64748b;
+    margin-bottom: 32px;
+}
+
+h2 {
+    color: #172b50;
+    font-size: 23px;
+    margin-bottom: 8px;
+}
+
+.description {
+    color: #64748b;
+    font-size: 13px;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: 8px;
+}
+
+input {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #dbe3ef;
+    border-radius: 8px;
+    margin-bottom: 18px;
+    outline: none;
+    font-size: 14px;
+}
+
+input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px #2563eb18;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+button:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+.error {
+    display: none;
+    margin-top: 15px;
+    padding: 11px;
+    background: #fee2e2;
+    color: #b91c1c;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 25px;
+    color: #94a3b8;
+    font-size: 11px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-card">
+
+    <div class="logo">LOGIN <span>AUTOMATION</span></div>
+    <div class="subtitle">SELENIUM TESTING SUITE</div>
+
+    <h2>Welcome Back</h2>
+
+    <p class="description">
+        Sign in to access the Login Automation Dashboard
+        and manage your Selenium test execution.
+    </p>
+
+    <form id="loginForm">
+
+        <label for="username">Username</label>
+
+        <input
+            type="text"
+            id="username"
+            placeholder="Enter your username"
+            autocomplete="username"
+            required
+        >
+
+        <label for="password">Password</label>
+
+        <input
+            type="password"
+            id="password"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+            required
+        >
+
+        <button type="submit" id="loginButton">
+            Sign In
+        </button>
+
+        <div class="error" id="errorMessage"></div>
+
+    </form>
+
+    <div class="footer">
+        Login Automation Suite • Java & Selenium
+    </div>
+
+</div>
+
+<script>
+const form = document.getElementById("loginForm");
+const button = document.getElementById("loginButton");
+const errorMessage = document.getElementById("errorMessage");
+
+async function checkExistingLogin() {
+
+    try {
+
+        const response = await fetch("/api/auth-status", {
+            credentials: "same-origin",
+            cache: "no-store"
+        });
+
+        const data = await response.json();
+
+        if (data.authenticated) {
+            window.location.replace("/dashboard");
+        }
+
+    } catch (error) {
+        console.error("Session check failed:", error);
+    }
+}
+
+form.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    errorMessage.style.display = "none";
+    button.disabled = true;
+    button.textContent = "Signing In...";
+
+    const username =
+        document.getElementById("username").value.trim();
+
+    const password =
+        document.getElementById("password").value;
+
+    try {
+
+        const response = await fetch("/api/login", {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                username: username,
+                password: password
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.error || "Invalid username or password"
+            );
+        }
+
+        window.location.replace("/dashboard");
+
+    } catch (error) {
+
+        errorMessage.textContent = error.message;
+        errorMessage.style.display = "block";
+
+        button.disabled = false;
+        button.textContent = "Sign In";
+    }
+});
+
+checkExistingLogin();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Student Portal</title>
+
+<style>
+:root {
+    --navy: #14213d;
+    --blue: #315efb;
+    --ink: #1e293b;
+    --muted: #64748b;
+    --line: #e2e8f0;
+    --bg: #f4f7fc;
+    --green: #16845b;
+    --amber: #b7791f;
+    --red: #c2414b;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+}
+
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+
+.login-wrap {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: linear-gradient(135deg, #101a33, #263f70);
+}
+
+.login-card {
+    width: 400px;
+    max-width: 100%;
+    padding: 36px;
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 24px 70px #07132966;
+}
+
+.brand-mark {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: #eaf0ff;
+    color: var(--blue);
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    font-size: 22px;
+    margin: 0 auto 18px;
+}
+
+.login-card h1 {
+    text-align: center;
+    font-size: 25px;
+    margin-bottom: 8px;
+    color: #172554;
+}
+
+.login-sub {
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 26px;
+}
+
+.field { margin: 16px 0; }
+
+.field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.field input {
+    width: 100%;
+    padding: 12px 13px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    outline: none;
+}
+
+.password-box { position: relative; }
+
+.password-box input { padding-right: 62px; }
+
+.toggle {
+    position: absolute;
+    right: 13px;
+    top: 13px;
+    color: var(--blue);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.remember {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--muted);
+    margin: 15px 0 20px;
+}
+
+.primary {
+    border: 0;
+    background: var(--blue);
+    color: white;
+    padding: 12px 18px;
+    border-radius: 9px;
+    font-weight: 700;
+}
+
+.primary:hover { background: #244bd4; }
+.login-card .primary { width: 100%; }
+
+#loginMessage {
+    min-height: 20px;
+    text-align: center;
+    margin-top: 14px;
+    font-size: 13px;
+}
+
+.success { color: var(--green); }
+.error { color: var(--red); }
+
+#dashboard {
+    display: none;
+    min-height: 100vh;
+}
+
+.topbar {
+    height: 68px;
+    background: white;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4.5%;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-weight: 800;
+    color: #172554;
+}
+
+.logo-icon {
+    height: 36px;
+    width: 36px;
+    border-radius: 10px;
+    background: #eaf0ff;
+    color: var(--blue);
+    display: grid;
+    place-items: center;
+}
+
+.top-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.user-chip {
+    background: #f1f5f9;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.logout {
+    border: 1px solid #cbd5e1;
+    background: white;
+    padding: 8px 13px;
+    border-radius: 8px;
+    color: #334155;
+    font-weight: 700;
+}
+
+.page {
+    max-width: 1180px;
+    margin: 28px auto;
+    padding: 0 22px 60px;
+}
+
+.welcome {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.welcome h1 {
+    font-size: 27px;
+    color: #172554;
+    margin-bottom: 6px;
+}
+
+.welcome p, .muted { color: var(--muted); }
+
+.welcome p { font-size: 14px; }
+
+.date-label {
+    font-size: 13px;
+    color: var(--muted);
+    background: white;
+    border: 1px solid var(--line);
+    padding: 9px 12px;
+    border-radius: 9px;
+}
+
+.section {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    margin: 17px 0;
+    overflow: hidden;
+    box-shadow: 0 3px 12px #0f172a08;
+}
+
+/* IMPORTANT: Only one dashboard section is visible */
+#dashboard .section {
+    display: none;
+}
+
+.section-head {
+    padding: 17px 20px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.section-head h2 {
+    font-size: 17px;
+    color: #172554;
+}
+
+.section-head p {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+}
+
+.section-body { padding: 4px 20px 14px; }
+
+.data-row {
+    display: grid;
+    grid-template-columns: 1.2fr 1.5fr 1fr 1fr;
+    gap: 12px;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid #edf1f6;
+    font-size: 13px;
+}
+
+.data-row:last-child { border-bottom: 0; }
+
+.data-row.header {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: #94a3b8;
+    font-weight: 800;
+    padding-top: 12px;
+}
+
+.data-row strong { font-size: 13px; }
+
+.status {
+    display: inline-block;
+    border-radius: 20px;
+    padding: 5px 9px;
+    font-size: 11px;
+    font-weight: 800;
+    background: #fff7e6;
+    color: var(--amber);
+}
+
+.status.done {
+    background: #e8f7ef;
+    color: var(--green);
+}
+
+.status.scheduled {
+    background: #edf2ff;
+    color: #4059c7;
+}
+
+.inline-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.small-btn {
+    border: 1px solid #d7dfeb;
+    background: white;
+    border-radius: 7px;
+    padding: 6px 9px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #334155;
+}
+
+.small-btn:hover {
+    border-color: var(--blue);
+    color: var(--blue);
+}
+
+.progress {
+    height: 7px;
+    background: #e9eef7;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 7px;
+}
+
+.progress span {
+    display: block;
+    height: 100%;
+    background: var(--blue);
+    border-radius: 10px;
+}
+
+.timer-row {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr 1.3fr;
+    gap: 12px;
+    align-items: center;
+    padding: 13px 0;
+    border-bottom: 1px solid #edf1f6;
+    font-size: 13px;
+}
+
+.timer-time {
+    font-variant-numeric: tabular-nums;
+    font-weight: 800;
+    color: #172554;
+}
+
+.todo-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 0;
+    border-bottom: 1px solid #edf1f6;
+    font-size: 13px;
+}
+
+.todo-row input {
+    accent-color: var(--blue);
+    width: 16px;
+    height: 16px;
+}
+
+.todo-row.completed .todo-text {
+    text-decoration: line-through;
+    color: #94a3b8;
+}
+
+.add-form {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.add-form input, .add-form select {
+    border: 1px solid #d5deea;
+    border-radius: 8px;
+    padding: 8px 10px;
+    min-width: 0;
+    font-size: 12px;
+}
+
+.add-form input { flex: 1; }
+
+.empty {
+    padding: 18px 0;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.notice {
+    padding: 13px 0;
+    border-bottom: 1px solid #edf1f6;
+    font-size: 13px;
+}
+
+.notice strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.notice small { color: var(--muted); }
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    padding: 16px 0;
+}
+
+.profile-item {
+    background: #f8faff;
+    padding: 13px;
+    border-radius: 9px;
+}
+
+.profile-item small {
+    display: block;
+    color: var(--muted);
+    margin-bottom: 5px;
+}
+
+.profile-item strong { font-size: 13px; }
+
+.section-navigator {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 18px;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    margin: 16px 0;
+}
+
+.section-navigator span {
+    font-weight: 700;
+    color: var(--navy);
+    font-size: 13px;
+    text-align: center;
+}
+
+.section-navigator button:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+}
+
+.footer {
+    text-align: center;
+    color: #94a3b8;
+    font-size: 11px;
+    padding: 22px;
+}
+
+@media(max-width:720px) {
+    .topbar { padding: 0 16px; }
+    .page { padding: 0 13px 40px; margin-top: 20px; }
+    .welcome { align-items: start; flex-direction: column; }
+    .data-row { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .data-row.header { display: none; }
+    .timer-row { grid-template-columns: 1fr 1fr; }
+    .section-head { align-items: flex-start; flex-direction: column; }
+    .add-form { width: 100%; flex-wrap: wrap; }
+    .profile-grid { grid-template-columns: 1fr 1fr; }
+    .user-chip { display: none; }
+    .section-navigator { flex-wrap: wrap; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-wrap" id="loginScreen">
+    <div class="login-card">
+        <div class="brand-mark">S</div>
+        <h1>Student Portal</h1>
+        <p class="login-sub">Sign in to manage your academic life</p>
+
+        <form id="loginForm">
+            <div class="field">
+                <label for="username">Username</label>
+                <input id="username" type="text"
+                       placeholder="Enter username"
+                       autocomplete="username" required>
+            </div>
+
+            <div class="field">
+                <label for="password">Password</label>
+                <div class="password-box">
+                    <input id="password" type="password"
+                           placeholder="Enter password"
+                           autocomplete="current-password" required>
+                    <span class="toggle" id="togglePassword">Show</span>
+                </div>
+            </div>
+
+            <label class="remember">
+                <input type="checkbox" id="rememberMe">
+                Remember me
+            </label>
+
+            <button class="primary" id="loginBtn" type="submit">
+                Login to Portal
+            </button>
+
+            <div id="loginMessage" role="alert"></div>
+        </form>
+
+        <p style="text-align:center;color:#94a3b8;font-size:11px;margin-top:18px">
+            Demo login: tester / test123
+        </p>
+    </div>
+</div>
+
+<div id="dashboard">
+    <header class="topbar">
+        <div class="logo">
+            <span class="logo-icon">S</span>
+            Smart Student Portal
+        </div>
+
+        <div class="top-actions">
+            <span class="user-chip" id="welcomeUser">tester</span>
+            <button class="logout" id="logoutBtn">Logout</button>
+        </div>
+    </header>
+
+    <main class="page">
+        <div class="welcome">
+            <div>
+                <h1 id="welcomeHeading">Good day, Student!</h1>
+                <p>Here is your academic overview. Keep moving towards your goals.</p>
+            </div>
+            <div class="date-label" id="todayDate"></div>
+        </div>
+
+        <!-- SECTION NAVIGATION -->
+        <div class="section-navigator">
+            <button class="small-btn" id="previousSection" type="button" disabled>
+                ← Previous
+            </button>
+
+            <span id="sectionCounter">Section 1 of 10</span>
+
+            <button class="primary" id="nextSection" type="button">
+                Next Section →
+            </button>
+        </div>
+
+        <section class="section" id="timetableSection">
+            <div class="section-head">
+                <div>
+                    <h2>01 · Today's Timetable</h2>
+                    <p>Your classes, time slots and locations</p>
+                </div>
+                <span class="status scheduled">Today's schedule</span>
+            </div>
+            <div class="section-body" id="timetableRows"></div>
+        </section>
+
+        <section class="section" id="pendingSection">
+            <div class="section-head">
+                <div>
+                    <h2>02 · Pending Work</h2>
+                    <p>Assignments and practical submissions</p>
+                </div>
+                <span class="status" id="pendingCount">3 pending</span>
+            </div>
+            <div class="section-body" id="assignmentRows"></div>
+        </section>
+
+        <section class="section" id="examSection">
+            <div class="section-head">
+                <div>
+                    <h2>03 · Upcoming Exams / Datesheet</h2>
+                    <p>Keep track of your next assessments</p>
+                </div>
+            </div>
+            <div class="section-body" id="examRows"></div>
+        </section>
+
+        <section class="section" id="studySection">
+            <div class="section-head">
+                <div>
+                    <h2>04 · Subject-wise Study Time</h2>
+                    <p>Track actual study time against your daily target</p>
+                </div>
+            </div>
+            <div class="section-body" id="studyRows"></div>
+        </section>
+
+        <section class="section" id="attendanceSection">
+            <div class="section-head">
+                <div>
+                    <h2>05 · Attendance</h2>
+                    <p>Subject-wise attendance overview · sample data</p>
+                </div>
+            </div>
+            <div class="section-body" id="attendanceRows"></div>
+        </section>
+
+        <section class="section" id="todoSection">
+            <div class="section-head">
+                <div>
+                    <h2>06 · To-do List</h2>
+                    <p>Add tasks and mark them complete</p>
+                </div>
+            </div>
+
+            <div class="section-body">
+                <form class="add-form" id="todoForm">
+                    <input id="todoInput"
+                           placeholder="Add a task (e.g. Revise Java collections)"
+                           required>
+                    <input id="todoDate" type="date" aria-label="Due date">
+                    <button class="primary" type="submit">Add task</button>
+                </form>
+                <div id="todoRows" style="margin-top:8px"></div>
+            </div>
+        </section>
+
+        <section class="section" id="resultsSection">
+            <div class="section-head">
+                <div>
+                    <h2>07 · Results & Marks</h2>
+                    <p>Recent academic performance · sample data</p>
+                </div>
+            </div>
+            <div class="section-body" id="resultRows"></div>
+        </section>
+
+        <section class="section" id="materialsSection">
+            <div class="section-head">
+                <div>
+                    <h2>08 · Study Material</h2>
+                    <p>Quick access to your subject resources</p>
+                </div>
+            </div>
+            <div class="section-body" id="materialRows"></div>
+        </section>
+
+        <section class="section" id="noticesSection">
+            <div class="section-head">
+                <div>
+                    <h2>09 · Notices & Academic Calendar</h2>
+                    <p>Important updates and upcoming dates</p>
+                </div>
+            </div>
+            <div class="section-body" id="noticeRows"></div>
+        </section>
+
+        <section class="section" id="profileSection">
+            <div class="section-head">
+                <div>
+                    <h2>10 · Student Profile & Fees</h2>
+                    <p>Basic student information and fee status · demo details</p>
+                </div>
+            </div>
+
+            <div class="section-body">
+                <div class="profile-grid">
+                    <div class="profile-item">
+                        <small>Student name</small>
+                        <strong>Demo Student</strong>
+                    </div>
+                    <div class="profile-item">
+                        <small>Programme</small>
+                        <strong>B.E. Computer Science</strong>
+                    </div>
+                    <div class="profile-item">
+                        <small>Semester</small>
+                        <strong>5th Semester</strong>
+                    </div>
+                    <div class="profile-item">
+                        <small>Student ID</small>
+                        <strong>DEMO-2026</strong>
+                    </div>
+                    <div class="profile-item">
+                        <small>Fee status</small>
+                        <strong style="color:var(--green)">Demo · Paid</strong>
+                    </div>
+                    <div class="profile-item">
+                        <small>Portal status</small>
+                        <strong>Active</strong>
+                    </div>
+                </div>
+
+                <p class="muted" style="font-size:11px;padding:0 0 12px">
+                    Replace these sample details with actual student records
+                    before project submission.
+                </p>
+            </div>
+        </section>
+
+        <div class="footer">
+            Smart Student Portal · Academic information shown here
+            is sample data for demonstration.
+        </div>
+    </main>
+</div>
+
+<script>
+const DEMO_USER = "tester";
+const DEMO_PASS = "test123";
+
+const $ = id => document.getElementById(id);
+
+const dashboardSections = [
+    "timetableSection",
+    "pendingSection",
+    "examSection",
+    "studySection",
+    "attendanceSection",
+    "todoSection",
+    "resultsSection",
+    "materialsSection",
+    "noticesSection",
+    "profileSection"
+];
+
+let currentSectionIndex = 0;
+
+function showDashboardSection(index) {
+    currentSectionIndex = Math.max(
+        0,
+        Math.min(index, dashboardSections.length - 1)
+    );
+
+    dashboardSections.forEach((id, i) => {
+        $(id).style.display =
+            i === currentSectionIndex ? "block" : "none";
+    });
+
+    const currentSection = $(dashboardSections[currentSectionIndex]);
+    const heading = currentSection.querySelector("h2").textContent;
+
+    $("sectionCounter").textContent =
+        `Section ${currentSectionIndex + 1} of ${dashboardSections.length}: ${heading}`;
+
+    $("previousSection").disabled = currentSectionIndex === 0;
+
+    $("nextSection").textContent =
+        currentSectionIndex === dashboardSections.length - 1
+            ? "All Sections Complete"
+            : "Next Section →";
+
+    $("nextSection").disabled =
+        currentSectionIndex === dashboardSections.length - 1;
+}
+
+$("previousSection").addEventListener("click", () => {
+    showDashboardSection(currentSectionIndex - 1);
+});
+
+$("nextSection").addEventListener("click", () => {
+    showDashboardSection(currentSectionIndex + 1);
+});
+
+const defaultData = {
+    assignments: [
+        {
+            subject: "Java Programming",
+            task: "Collections practical file",
+            due: "2026-11-03",
+            type: "Practical",
+            status: "Pending"
+        },
+        {
+            subject: "Database Systems",
+            task: "MongoDB CRUD assignment",
+            due: "2026-11-05",
+            type: "Assignment",
+            status: "Pending"
+        },
+        {
+            subject: "Data Structures",
+            task: "Binary Search Tree questions",
+            due: "2026-11-07",
+            type: "Assignment",
+            status: "In progress"
+        }
+    ],
+
+    exams: [
+        {
+            date: "2026-11-10",
+            subject: "Java Programming",
+            time: "09:30 AM – 12:30 PM",
+            type: "Mid-term"
+        },
+        {
+            date: "2026-11-13",
+            subject: "Database Systems",
+            time: "01:30 PM – 04:30 PM",
+            type: "Practical"
+        },
+        {
+            date: "2026-11-17",
+            subject: "Data Structures",
+            time: "09:30 AM – 12:30 PM",
+            type: "Mid-term"
+        }
+    ],
+
+    study: [
+        { subject: "Data Structures", target: 120, seconds: 0 },
+        { subject: "Java Programming", target: 90, seconds: 0 },
+        { subject: "Database Systems", target: 60, seconds: 0 },
+        { subject: "Computer Networks", target: 60, seconds: 0 }
+    ],
+
+    todos: [
+        { text: "Revise DSA lecture notes", due: "2026-11-01", done: false },
+        { text: "Complete Java practical file", due: "2026-11-02", done: false },
+        { text: "Practice MongoDB queries", due: "2026-11-03", done: true }
+    ]
+};
+
+function loadData() {
+    try {
+        return {
+            ...defaultData,
+            ...JSON.parse(localStorage.getItem("studentPortalData") || "{}")
+        };
+    } catch (e) {
+        return JSON.parse(JSON.stringify(defaultData));
+    }
+}
+
+let data = loadData();
+let activeTimers = {};
+let timerHandles = {};
+
+function saveData() {
+    localStorage.setItem("studentPortalData", JSON.stringify(data));
+}
+
+function escapeText(value) {
+    return String(value).replace(/[&<>"']/g, c => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    }[c]));
+}
+
+function formatDate(value) {
+    if (!value) return "Not set";
+
+    const d = new Date(value + "T00:00:00");
+
+    return d.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+    });
+}
+
+function minutesLabel(seconds) {
+    const m = Math.floor(seconds / 60);
+    return `${Math.floor(m / 60)}h ${m % 60}m`;
+}
+
+function render() {
+    $("todayDate").textContent =
+        new Date().toLocaleDateString("en-IN", {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        });
+
+    const timetable = [
+        ["09:30 – 10:30", "Data Structures", "1 hour", "Room 204 · Demo Faculty"],
+        ["10:30 – 11:30", "Java Programming", "1 hour", "Lab 3 · Demo Faculty"],
+        ["11:30 – 12:30", "Database Systems", "1 hour", "Room 108 · Demo Faculty"],
+        ["01:30 – 02:30", "Computer Networks", "1 hour", "Room 205 · Demo Faculty"],
+        ["02:30 – 04:00", "Practical / Lab", "1.5 hours", "Computer Lab"]
+    ];
+
+    $("timetableRows").innerHTML =
+        '<div class="data-row header"><span>Time slot</span><span>Subject</span><span>Duration</span><span>Teacher / Room</span></div>' +
+        timetable.map(r => `
+            <div class="data-row">
+                <strong>${r[0]}</strong>
+                <span>${r[1]}</span>
+                <span>${r[2]}</span>
+                <span class="muted">${r[3]}</span>
+            </div>
+        `).join("");
+
+    $("pendingCount").textContent =
+        data.assignments.filter(a => a.status !== "Completed").length + " pending";
+
+    $("assignmentRows").innerHTML =
+        '<div class="data-row header"><span>Subject</span><span>Work</span><span>Due date</span><span>Status</span></div>' +
+        data.assignments.map((a, i) => `
+            <div class="data-row">
+                <strong>${escapeText(a.subject)}</strong>
+                <span>${escapeText(a.task)} <small class="muted">(${escapeText(a.type)})</small></span>
+                <span>${formatDate(a.due)}</span>
+                <span>
+                    <select class="small-btn assignment-status"
+                            data-index="${i}" aria-label="Assignment status">
+                        <option ${a.status === "Pending" ? "selected" : ""}>Pending</option>
+                        <option ${a.status === "In progress" ? "selected" : ""}>In progress</option>
+                        <option ${a.status === "Completed" ? "selected" : ""}>Completed</option>
+                    </select>
+                </span>
+            </div>
+        `).join("");
+
+    $("examRows").innerHTML =
+        '<div class="data-row header"><span>Date</span><span>Subject</span><span>Time</span><span>Assessment</span></div>' +
+        data.exams.map(e => `
+            <div class="data-row">
+                <strong>${formatDate(e.date)}</strong>
+                <span>${escapeText(e.subject)}</span>
+                <span>${escapeText(e.time)}</span>
+                <span class="status scheduled">${escapeText(e.type)}</span>
+            </div>
+        `).join("");
+
+    $("studyRows").innerHTML = data.study.map((s, i) => {
+        const pct = Math.min(100, Math.round(s.seconds / 60 / s.target * 100));
+
+        return `
+            <div class="timer-row">
+                <strong>${escapeText(s.subject)}</strong>
+                <div>
+                    <span class="timer-time" id="studyTime${i}">
+                        ${minutesLabel(s.seconds)}
+                    </span>
+                    <div class="progress">
+                        <span id="studyProgress${i}" style="width:${pct}%"></span>
+                    </div>
+                    <small class="muted">Target: ${s.target} min · ${pct}%</small>
+                </div>
+                <span class="muted">Completed / Target</span>
+                <div class="inline-actions">
+                    <button class="small-btn timer-btn" data-index="${i}">
+                        ${activeTimers[i] ? "Pause" : "Start study"}
+                    </button>
+                    <button class="small-btn reset-btn" data-index="${i}">Reset</button>
+                </div>
+            </div>
+        `;
+    }).join("");
+
+    const attendance = [
+        ["Data Structures", "34 / 40", "85%"],
+        ["Java Programming", "36 / 40", "90%"],
+        ["Database Systems", "32 / 40", "80%"],
+        ["Computer Networks", "29 / 40", "72.5%"]
+    ];
+
+    $("attendanceRows").innerHTML =
+        '<div class="data-row header"><span>Subject</span><span>Classes attended</span><span>Attendance</span><span>Progress</span></div>' +
+        attendance.map(a => `
+            <div class="data-row">
+                <strong>${a[0]}</strong>
+                <span>${a[1]}</span>
+                <span>${a[2]}</span>
+                <div class="progress"><span style="width:${parseFloat(a[2])}%"></span></div>
+            </div>
+        `).join("");
+
+    $("todoRows").innerHTML = data.todos.length
+        ? data.todos.map((t, i) => `
+            <div class="todo-row ${t.done ? "completed" : ""}">
+                <input type="checkbox" class="todo-check"
+                       data-index="${i}" ${t.done ? "checked" : ""}>
+                <span class="todo-text" style="flex:1">${escapeText(t.text)}</span>
+                <small class="muted">${formatDate(t.due)}</small>
+                <button class="small-btn todo-delete" data-index="${i}">Delete</button>
+            </div>
+        `).join("")
+        : '<div class="empty">No tasks yet. Add your first task above.</div>';
+
+    $("resultRows").innerHTML =
+        '<div class="data-row header"><span>Subject</span><span>Assessment</span><span>Marks</span><span>Result</span></div>' +
+        [
+            ["Java Programming", "Class test", "18 / 20", "90%"],
+            ["Data Structures", "Quiz", "16 / 20", "80%"],
+            ["Database Systems", "Practical", "19 / 20", "95%"]
+        ].map(a => `
+            <div class="data-row">
+                <strong>${a[0]}</strong>
+                <span>${a[1]}</span>
+                <span>${a[2]}</span>
+                <span class="status done">${a[3]}</span>
+            </div>
+        `).join("");
+
+    $("materialRows").innerHTML = [
+        ["Data Structures", "Lecture notes · Unit 1–3"],
+        ["Java Programming", "Collections and OOP notes"],
+        ["Database Systems", "SQL and MongoDB practice material"]
+    ].map(a => `
+        <div class="notice">
+            <strong>${a[0]}</strong>
+            <small>${a[1]} · Sample resource entry</small>
+        </div>
+    `).join("");
+
+    $("noticeRows").innerHTML = [
+        ["Academic reminder", "Check your course announcements and assessment schedule."],
+        ["Library update", "Keep your study material and reference books organised."],
+        ["Academic calendar", "Upcoming dates shown in the exams section are demonstration entries."]
+    ].map(a => `
+        <div class="notice">
+            <strong>${a[0]}</strong>
+            <small>${a[1]}</small>
+        </div>
+    `).join("");
+}
+
+// PASSWORD SHOW / HIDE
+$("togglePassword").addEventListener("click", () => {
+    const p = $("password");
+    p.type = p.type === "password" ? "text" : "password";
+    $("togglePassword").textContent =
+        p.type === "password" ? "Show" : "Hide";
+});
+
+// LOGIN
+$("loginForm").addEventListener("submit", e => {
+    e.preventDefault();
+
+    const u = $("username").value.trim();
+    const p = $("password").value;
+
+    if (u === DEMO_USER && p === DEMO_PASS) {
+        $("loginMessage").textContent = "Login successful!";
+        $("loginMessage").className = "success";
+
+        $("welcomeUser").textContent = u;
+        $("welcomeHeading").textContent = "Welcome back, " + u + "!";
+
+        setTimeout(() => {
+            $("loginScreen").style.display = "none";
+            $("dashboard").style.display = "block";
+
+            render();
+            showDashboardSection(0);
+        }, 350);
+
+    } else {
+        $("loginMessage").textContent = "Invalid username or password.";
+        $("loginMessage").className = "error";
+    }
+});
+
+// LOGOUT
+$("logoutBtn").addEventListener("click", () => {
+    Object.values(timerHandles).forEach(clearInterval);
+
+    timerHandles = {};
+    activeTimers = {};
+
+    $("dashboard").style.display = "none";
+    showDashboardSection(0);
+
+    $("loginScreen").style.display = "grid";
+    $("loginForm").reset();
+
+    $("loginMessage").textContent = "";
+    $("loginMessage").className = "";
+
+    $("password").type = "password";
+    $("togglePassword").textContent = "Show";
+});
+
+// ADD TODO TASK
+$("todoForm").addEventListener("submit", e => {
+    e.preventDefault();
+
+    const text = $("todoInput").value.trim();
+    if (!text) return;
+
+    data.todos.push({
+        text: text,
+        due: $("todoDate").value,
+        done: false
+    });
+
+    saveData();
+
+    $("todoInput").value = "";
+    $("todoDate").value = "";
+
+    render();
+});
+
+// UPDATE CHECKBOX AND ASSIGNMENT STATUS
+document.addEventListener("change", e => {
+    if (e.target.matches(".todo-check")) {
+        data.todos[Number(e.target.dataset.index)].done = e.target.checked;
+        saveData();
+        render();
+    }
+
+    if (e.target.matches(".assignment-status")) {
+        data.assignments[Number(e.target.dataset.index)].status = e.target.value;
+        saveData();
+        render();
+    }
+});
+
+// BUTTON ACTIONS
+document.addEventListener("click", e => {
+    if (e.target.matches(".todo-delete")) {
+        data.todos.splice(Number(e.target.dataset.index), 1);
+        saveData();
+        render();
+    }
+
+    if (e.target.matches(".timer-btn")) {
+        const i = Number(e.target.dataset.index);
+
+        if (activeTimers[i]) {
+            clearInterval(timerHandles[i]);
+            delete timerHandles[i];
+            delete activeTimers[i];
+        } else {
+            activeTimers[i] = true;
+
+            timerHandles[i] = setInterval(() => {
+                data.study[i].seconds++;
+
+                const t = $("studyTime" + i);
+                if (t) {
+                    t.textContent = minutesLabel(data.study[i].seconds);
+                }
+
+                const pct = Math.min(
+                    100,
+                    Math.round(data.study[i].seconds / 60 / data.study[i].target * 100)
+                );
+
+                const bar = $("studyProgress" + i);
+                if (bar) bar.style.width = pct + "%";
+
+                saveData();
+            }, 1000);
+        }
+
+        render();
+    }
+
+    if (e.target.matches(".reset-btn")) {
+        const i = Number(e.target.dataset.index);
+
+        if (timerHandles[i]) clearInterval(timerHandles[i]);
+
+        delete timerHandles[i];
+        delete activeTimers[i];
+
+        data.study[i].seconds = 0;
+
+        saveData();
+        render();
+    }
+});
+</script>
+
+</body>
+</html>

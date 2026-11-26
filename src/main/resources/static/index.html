@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login Automation Suite</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Segoe UI,Arial,sans-serif}
+body{background:#f3f6fc;color:#1e293b}
+.sidebar{position:fixed;width:235px;height:100vh;background:#111c35;color:white;padding:28px 20px}
+.brand{font-size:20px;font-weight:800;margin-bottom:8px}
+.brand span{color:#60a5fa}
+.sub{font-size:12px;color:#9caecb;margin-bottom:40px}
+.nav{padding:14px;margin:9px 0;border-radius:9px;color:#cbd5e1;font-size:14px}
+.nav.active{background:#263b61;color:white}
+.side-bottom{position:absolute;bottom:25px;font-size:12px;color:#9caecb}
+.main{margin-left:235px;padding:30px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;gap:15px}
+h1{font-size:27px;color:#14213d}
+.top p{color:#64748b;font-size:14px;margin-top:6px}
+.badge{background:white;padding:10px 15px;border-radius:30px;font-size:13px}
+.welcome{background:linear-gradient(120deg,#172b50,#2563a9);color:white;padding:27px;border-radius:16px;margin-bottom:23px}
+.welcome h2{margin-bottom:8px}
+.welcome p{color:#dbeafe;font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px}
+.stat,.panel{background:white;border:1px solid #e8edf5;border-radius:13px;padding:20px;box-shadow:0 3px 12px #0f172a08}
+.stat p{font-size:13px;color:#64748b;margin-bottom:10px}
+.stat h2{font-size:29px;color:#172b50}
+.grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,.8fr);gap:18px;align-items:start}
+.panel{margin-bottom:18px}
+.heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px;gap:10px}
+.heading h3{font-size:17px;color:#172b50}
+.tag{font-size:12px;color:#2563eb;background:#eff6ff;padding:7px 10px;border-radius:20px}
+button{cursor:pointer;border:0;border-radius:8px;padding:12px 18px;font-weight:700}
+.run{background:#2563eb;color:white}
+.run:disabled{opacity:.6;cursor:not-allowed}
+.reset{background:white;border:1px solid #dbe3ef;color:#334155}
+.logout{background:#fee2e2;color:#b91c1c;border:1px solid #fecaca}
+.progress{height:10px;background:#e8edf5;border-radius:20px;overflow:hidden;margin:12px 0}
+.fill{height:100%;width:0;background:linear-gradient(90deg,#2563eb,#38bdf8);transition:width .3s}
+.info{display:flex;justify-content:space-between;font-size:12px;color:#64748b;gap:10px}
+.category{font-size:11px;font-weight:800;letter-spacing:1px;color:#64748b;margin:18px 0 9px;text-transform:uppercase}
+.test{background:#f8fafc;border:1px solid #edf1f7;border-radius:9px;padding:12px;margin:8px 0;display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.test-name{font-size:13px;font-weight:600}
+.test-message{font-size:11px;color:#64748b;margin-top:6px;line-height:1.5;overflow-wrap:anywhere}
+.status{font-size:11px;font-weight:800;padding:6px 9px;border-radius:20px;white-space:nowrap;background:#e2e8f0;color:#64748b}
+.status.pass{background:#dcfce7;color:#15803d}
+.status.fail{background:#fee2e2;color:#dc2626}
+.status.running{background:#dbeafe;color:#1d4ed8}
+.chart{height:175px;display:flex;justify-content:center;align-items:end;gap:28px}
+.barcol{height:100%;display:flex;flex-direction:column;justify-content:end;align-items:center;gap:7px;width:55px}
+.bar{width:36px;min-height:3px;border-radius:7px 7px 2px 2px}
+.green{background:#22c55e}.red{background:#ef4444}.grey{background:#94a3b8}
+.barlabel{font-size:11px;color:#64748b}
+.report{display:block;padding:14px;border:1px solid #e5eaf2;border-radius:9px;margin:10px 0;text-decoration:none;color:#2563eb;font-size:13px;font-weight:700}
+.activity{font-size:13px;color:#64748b;line-height:1.6}
+.message{display:none;background:#eff6ff;color:#1d4ed8;padding:12px;border-radius:8px;font-size:13px;margin-top:15px}
+footer{text-align:center;color:#94a3b8;font-size:12px;padding:20px}
+@media(max-width:1000px){.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}}
+@media(max-width:700px){.sidebar{position:relative;width:100%;height:auto}.side-bottom{display:none}.main{margin:0;padding:15px}.top{display:block}.badge{display:inline-block;margin-top:12px}}
+</style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+    <div class="brand">LOGIN <span>AUTOMATION</span></div>
+    <div class="sub">SELENIUM TESTING SUITE</div>
+    <div class="nav active">▦ &nbsp; Dashboard</div>
+    <div class="nav">◉ &nbsp; Test Execution</div>
+    <div class="nav">▤ &nbsp; Test Reports</div>
+    <div class="side-bottom">Login Automation Suite<br>Version 1.0.0</div>
+</aside>
+
+<main class="main">
+
+    <div class="top">
+        <div>
+            <h1>Automation Dashboard</h1>
+            <p>Monitor your Selenium test execution.</p>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <div class="badge">● Automation System</div>
+            <button class="logout" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <section class="welcome">
+        <h2>Welcome to Login Automation Suite</h2>
+        <p>Automated login validation, student dashboard testing and report generation.</p>
+        <p style="margin-top:10px">Java | Selenium WebDriver | Test Automation</p>
+    </section>
+
+    <section class="stats">
+        <div class="stat"><p>Total Test Cases</p><h2 id="total">25</h2></div>
+        <div class="stat"><p>Completed</p><h2 id="completed">0</h2></div>
+        <div class="stat"><p>Passed</p><h2 id="passed">0</h2></div>
+        <div class="stat"><p>Failed</p><h2 id="failed">0</h2></div>
+    </section>
+
+    <section class="grid">
+
+        <div>
+
+            <div class="panel">
+                <div class="heading">
+                    <h3>Test Execution</h3>
+                    <span class="tag">25 TEST CASES</span>
+                </div>
+
+                <p style="font-size:13px;color:#64748b">
+                    Run the complete Selenium automation suite.
+                </p>
+
+                <div style="display:flex;gap:10px;margin-top:17px;flex-wrap:wrap">
+                    <button class="run" id="runButton" onclick="runAutomation()">▶ Run Automation</button>
+                    <button class="reset" onclick="resetDashboard()">Reset Dashboard</button>
+                </div>
+
+                <div class="message" id="message"></div>
+
+                <div style="margin-top:23px">
+                    <div class="info">
+                        <span>Execution Progress</span>
+                        <strong id="percent">0%</strong>
+                    </div>
+                    <div class="progress"><div class="fill" id="fill"></div></div>
+                    <div class="info">
+                        <span id="count">0 of 25 completed</span>
+                        <span id="current">Waiting to start</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="heading">
+                    <h3>Test Case Details</h3>
+                    <span class="tag">25 TESTS</span>
+                </div>
+                <div id="testList"></div>
+            </div>
+
+        </div>
+
+        <div>
+
+            <div class="panel">
+                <div class="heading"><h3>Execution Summary</h3></div>
+                <div class="chart">
+                    <div class="barcol">
+                        <strong id="passValue">0</strong>
+                        <div class="bar green" id="passBar"></div>
+                        <span class="barlabel">Passed</span>
+                    </div>
+                    <div class="barcol">
+                        <strong id="failValue">0</strong>
+                        <div class="bar red" id="failBar"></div>
+                        <span class="barlabel">Failed</span>
+                    </div>
+                    <div class="barcol">
+                        <strong id="pendingValue">25</strong>
+                        <div class="bar grey" id="pendingBar" style="height:150px"></div>
+                        <span class="barlabel">Pending</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="heading"><h3>Test Reports</h3></div>
+                <a class="report" href="/reports/test-report.html" target="_blank">▤ &nbsp; Open HTML Report ↗</a>
+                <a class="report" href="/reports/test-report.csv" target="_blank">▦ &nbsp; Open CSV Report ↗</a>
+            </div>
+
+            <div class="panel">
+                <div class="heading"><h3>Latest Activity</h3></div>
+                <div class="activity" id="activity">Automation suite is ready.</div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>Login Automation Suite • Powered by Java and Selenium</footer>
+
+</main>
+
+<script>
+const TOTAL = 25;
+
+const tests = [
+    ["Wrong Password","Invalid Login Tests"],
+    ["Invalid Username","Invalid Login Tests"],
+    ["Both Fields Empty","Invalid Login Tests"],
+    ["Username Empty","Invalid Login Tests"],
+    ["Password Empty","Invalid Login Tests"],
+    ["Username Case Sensitivity","Invalid Login Tests"],
+    ["Password Case Sensitivity","Invalid Login Tests"],
+
+    ["Valid Login","Valid Login Test"],
+
+    ["Dashboard Display","Student Dashboard Tests"],
+    ["Timetable","Student Dashboard Tests"],
+    ["Assignments and Pending Work","Student Dashboard Tests"],
+    ["Exam Schedule","Student Dashboard Tests"],
+    ["Study Planner","Student Dashboard Tests"],
+    ["Attendance","Student Dashboard Tests"],
+    ["To Do List","Student Dashboard Tests"],
+    ["Results","Student Dashboard Tests"],
+    ["Study Materials","Student Dashboard Tests"],
+    ["Notices","Student Dashboard Tests"],
+    ["Student Profile","Student Dashboard Tests"],
+    ["To Do Input","Student Dashboard Tests"],
+    ["To Do Form","Student Dashboard Tests"],
+    ["Section Navigation","Student Dashboard Tests"],
+    ["Add To Do Task","Student Dashboard Tests"],
+
+    ["HTML Report Generation","Report Tests"],
+    ["CSV Report Generation","Report Tests"]
+];
+
+let timer = null;
+let running = false;
+
+function renderTests() {
+
+    const list = document.getElementById("testList");
+    list.innerHTML = "";
+
+    let category = "";
+
+    tests.forEach((test, index) => {
+
+        if (category !== test[1]) {
+            category = test[1];
+
+            const heading = document.createElement("div");
+            heading.className = "category";
+            heading.textContent = category;
+            list.appendChild(heading);
+        }
+
+        const row = document.createElement("div");
+        row.className = "test";
+
+        const details = document.createElement("div");
+        details.style.flex = "1";
+
+        const name = document.createElement("div");
+        name.className = "test-name";
+        name.textContent = (index + 1) + ". " + test[0];
+
+        const message = document.createElement("div");
+        message.className = "test-message";
+        message.id = "message-" + index;
+
+        details.appendChild(name);
+        details.appendChild(message);
+
+        const status = document.createElement("span");
+        status.className = "status";
+        status.id = "status-" + index;
+        status.textContent = "PENDING";
+
+        row.appendChild(details);
+        row.appendChild(status);
+
+        list.appendChild(row);
+    });
+}
+
+function updateResult(name, result) {
+
+    const index = tests.findIndex(t => t[0] === name);
+    if (index < 0) return;
+
+    const status = document.getElementById("status-" + index);
+    const message = document.getElementById("message-" + index);
+
+    status.textContent = result.status;
+    status.className = "status " + result.status.toLowerCase();
+    message.textContent = result.message || "";
+}
+
+function updateUI(data) {
+
+    const completed = Math.min(Number(data.completed) || 0, TOTAL);
+    const passed = Number(data.passed) || 0;
+    const failed = Number(data.failed) || 0;
+    const pending = Math.max(0, TOTAL - completed);
+
+    document.getElementById("total").textContent = TOTAL;
+    document.getElementById("completed").textContent = completed;
+    document.getElementById("passed").textContent = passed;
+    document.getElementById("failed").textContent = failed;
+
+    const percentage = Math.round(completed / TOTAL * 100);
+
+    document.getElementById("percent").textContent = percentage + "%";
+    document.getElementById("fill").style.width = percentage + "%";
+    document.getElementById("count").textContent =
+        completed + " of " + TOTAL + " completed";
+
+    document.getElementById("current").textContent =
+        data.currentTest || "Waiting";
+
+    document.getElementById("passValue").textContent = passed;
+    document.getElementById("failValue").textContent = failed;
+    document.getElementById("pendingValue").textContent = pending;
+
+    document.getElementById("passBar").style.height =
+        Math.max(3, passed / TOTAL * 150) + "px";
+
+    document.getElementById("failBar").style.height =
+        Math.max(3, failed / TOTAL * 150) + "px";
+
+    document.getElementById("pendingBar").style.height =
+        Math.max(3, pending / TOTAL * 150) + "px";
+
+    if (data.results) {
+        Object.entries(data.results).forEach(([name, result]) => {
+            updateResult(name, result);
+        });
+    }
+
+    if (data.currentTest) {
+        document.getElementById("activity").textContent =
+            data.running
+                ? "Currently executing: " + data.currentTest
+                : data.currentTest;
+    }
+
+    if (completed >= TOTAL && !data.running) {
+        finishAutomation(passed, failed);
+    }
+}
+
+async function pollProgress() {
+
+    try {
+
+        const response = await fetch("/api/progress", {
+            credentials: "same-origin",
+            cache: "no-store"
+        });
+
+        if (response.status === 401) {
+            window.location.replace("/");
+            return;
+        }
+
+        if (!response.ok) return;
+
+        const data = await response.json();
+        updateUI(data);
+
+    } catch (error) {
+        console.log("Progress error:", error);
+    }
+}
+
+async function runAutomation() {
+
+    if (running) return;
+
+    running = true;
+
+    const button = document.getElementById("runButton");
+    button.disabled = true;
+    button.textContent = "Automation Running...";
+
+    document.getElementById("message").style.display = "block";
+    document.getElementById("message").textContent =
+        "Starting Selenium automation...";
+
+    renderTests();
+
+    try {
+
+        const response = await fetch("/api/run-tests", {
+            method: "POST",
+            credentials: "same-origin"
+        });
+
+        const data = await response.json();
+
+        if (response.status === 401) {
+            window.location.replace("/");
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error(data.error || "Could not start automation");
+        }
+
+        if (timer) clearInterval(timer);
+
+        await pollProgress();
+
+        timer = setInterval(pollProgress, 1000);
+
+    } catch (error) {
+
+        running = false;
+        button.disabled = false;
+        button.textContent = "▶ Run Automation";
+
+        document.getElementById("message").textContent =
+            "Error: " + error.message;
+    }
+}
+
+function finishAutomation(passed, failed) {
+
+    if (!running) return;
+
+    running = false;
+
+    if (timer) {
+        clearInterval(timer);
+        timer = null;
+    }
+
+    const button = document.getElementById("runButton");
+    button.disabled = false;
+    button.textContent = "▶ Run Automation";
+
+    document.getElementById("message").style.display = "block";
+    document.getElementById("message").textContent =
+        "Automation completed. Passed: " + passed + " | Failed: " + failed;
+
+    document.getElementById("activity").textContent =
+        "All 25 test cases have completed. Pending: 0.";
+}
+
+function resetDashboard() {
+
+    if (running) {
+        alert("Wait until automation finishes.");
+        return;
+    }
+
+    renderTests();
+
+    updateUI({
+        completed: 0,
+        passed: 0,
+        failed: 0,
+        currentTest: "Waiting to start",
+        results: {}
+    });
+
+    document.getElementById("activity").textContent =
+        "Dashboard reset. Ready for a new run.";
+
+    document.getElementById("message").style.display = "none";
+}
+
+async function logout() {
+
+    if (running) {
+        alert("Wait until automation finishes.");
+        return;
+    }
+
+    try {
+
+        const response = await fetch("/api/logout", {
+            method: "POST",
+            credentials: "same-origin"
+        });
+
+        if (!response.ok) {
+            throw new Error("Logout request failed");
+        }
+
+        window.location.replace("/");
+
+    } catch (error) {
+        alert("Unable to logout. Please try again.");
+    }
+}
+
+renderTests();
+
+updateUI({
+    completed: 0,
+    passed: 0,
+    failed: 0,
+    currentTest: "Waiting to start",
+    results: {}
+});
+
+// Load existing progress after opening dashboard.
+pollProgress();
+</script>
+
+</body>
+</html>
